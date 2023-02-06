@@ -1,11 +1,7 @@
 var SerialPort = require('serialport');
 var xbee_api = require('xbee-api');
 var C = xbee_api.constants;
-<<<<<<< HEAD
 //var storage = require("./storage")
-=======
-// var storage = require("./storage")
->>>>>>> c437935 ([Tests] lumière LED en fonction appui bouton)
 require('dotenv').config()
 
 
@@ -16,11 +12,7 @@ var xbeeAPI = new xbee_api.XBeeAPI({
 });
 
 let serialport = new SerialPort(SERIAL_PORT, {
-<<<<<<< HEAD
-  baudRate: parseInt(process.env.SERIAL_BAUDRATE) || 9600,
-=======
   baudRate: Number.parseInt(process.env.SERIAL_BAUDRATE) || 9600,
->>>>>>> c437935 ([Tests] lumière LED en fonction appui bouton)
 }, function (err) {
   if (err) {
     return console.log('Error: ', err.message)
