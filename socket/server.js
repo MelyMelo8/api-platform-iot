@@ -1,7 +1,11 @@
 var SerialPort = require('serialport');
 var xbee_api = require('xbee-api');
 var C = xbee_api.constants;
+<<<<<<< HEAD
 //var storage = require("./storage")
+=======
+// var storage = require("./storage")
+>>>>>>> c437935 ([Tests] lumière LED en fonction appui bouton)
 require('dotenv').config()
 
 
@@ -12,7 +16,11 @@ var xbeeAPI = new xbee_api.XBeeAPI({
 });
 
 let serialport = new SerialPort(SERIAL_PORT, {
+<<<<<<< HEAD
   baudRate: parseInt(process.env.SERIAL_BAUDRATE) || 9600,
+=======
+  baudRate: Number.parseInt(process.env.SERIAL_BAUDRATE) || 9600,
+>>>>>>> c437935 ([Tests] lumière LED en fonction appui bouton)
 }, function (err) {
   if (err) {
     return console.log('Error: ', err.message)
@@ -44,37 +52,28 @@ serialport.on("open", function () {
 // All frames parsed by the XBee will be emitted here
 
 // storage.listSensors().then((sensors) => sensors.forEach((sensor) => console.log(sensor.data())))
+let test = false;
 
 xbeeAPI.parser.on("data", function (frame) {
 
   //on new device is joined, register it
 
-  //on packet received, dispatch event
-  //let dataReceived = String.fromCharCode.apply(null, frame.data);
-  if (C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET === frame.type) {
-    console.log("C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET");
-    let dataReceived = String.fromCharCode.apply(null, frame.data);
-    console.log(">> ZIGBEE_RECEIVE_PACKET >", dataReceived);
+  // console.log(frame);
+  if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
+    console.log(frame);
+    if(frame.digitalSamples.DIO3 === 0){
+      console.log("Bouton Appuyé ...\n");
 
-  }
+      var frame_obj_led = { 
+        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+        destination64: "FFFFFFFFFFFFFFFF",
+        command: "D2",
+        commandParameter: [test ? 0x04 : 0x05],
+      };
+      test = !test;
 
-  if (C.FRAME_TYPE.NODE_IDENTIFICATION === frame.type) {
-    // let dataReceived = String.fromCharCode.apply(null, frame.nodeIdentifier);
-    console.log("NODE_IDENTIFICATION");
-    //storage.registerSensor(frame.remote64)
-
-  } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
-
-    console.log("ZIGBEE_IO_DATA_SAMPLE_RX")
-    console.log(frame.analogSamples.AD0)
-    //storage.registerSample(frame.remote64,frame.analogSamples.AD0 )
-
-  } else if (C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE === frame.type) {
-    console.log("REMOTE_COMMAND_RESPONSE")
-  } else {
-    console.debug(frame);
-    let dataReceived = String.fromCharCode.apply(null, frame.commandData)
-    console.log(dataReceived);
+      xbeeAPI.builder.write(frame_obj_led);
+    }
   }
 
 });
