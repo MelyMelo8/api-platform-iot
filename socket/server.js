@@ -40,32 +40,37 @@ serialport.on("open", function () {
   xbeeAPI.builder.write(frame_obj);
 
 });
-
+//test
 // All frames parsed by the XBee will be emitted here
 
 // storage.listSensors().then((sensors) => sensors.forEach((sensor) => console.log(sensor.data())))
-let test = false;
+//let test = false;
+
+var frame_obj_led = { 
+  type: C.FRAME_TYPE.AT_COMMAND,
+  command: "D2",
+  commandParameter: [0x05],
+};
+xbeeAPI.builder.write(frame_obj_led);
+var start = new Date();
 
 xbeeAPI.parser.on("data", function (frame) {
 
-  //on new device is joined, register it
 
-  // console.log(frame);
-  if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
-    console.log(frame);
-    if(frame.digitalSamples.DIO3 === 0){
+   if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
+
+    if(frame.digitalSamples.DIO1 === 0){
+      var time = new Date() - start;
       console.log("Bouton Appuyé ...\n");
-
+      console.log("Temps récation : ");
+      console.log(time);
       var frame_obj_led = { 
-        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-        destination64: "FFFFFFFFFFFFFFFF",
+        type: C.FRAME_TYPE.AT_COMMAND,
         command: "D2",
-        commandParameter: [test ? 0x04 : 0x05],
+        commandParameter: [0x04],
       };
-      test = !test;
 
       xbeeAPI.builder.write(frame_obj_led);
     }
   }
-
 });
