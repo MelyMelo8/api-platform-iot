@@ -40,7 +40,7 @@ serialport.on("open", function () {
   xbeeAPI.builder.write(frame_obj);
 
 });
-
+//test
 // All frames parsed by the XBee will be emitted here
 
 // storage.listSensors().then((sensors) => sensors.forEach((sensor) => console.log(sensor.data())))
