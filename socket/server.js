@@ -6,7 +6,8 @@ var C = xbee_api.constants;
 require('dotenv').config()
 
 const BROADCAST_ADDRESS = 'FFFFFFFFFFFFFFFF';
-
+const ZIBGEE_1 = '0013A20041582EF0';
+const ZIGBEE_2 = '0013A20041C345D2';
 
 const SERIAL_PORT = process.env.SERIAL_PORT;
 
@@ -47,18 +48,11 @@ serialport.on("open", function () {
 //Allumage led
 var frame_obj_led1 = {
   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-  destination64: BROADCAST_ADDRESS,
+  destination64: ZIBGEE_1,//BROADCAST_ADDRESS,
   command: "D2",
   commandParameter: [0x05],
 };
-// var frame_obj_led2 = {
-//   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-//   destination64: "f436",
-//   command: "D2",
-//   commandParameter: [0x05],
-// };
 xbeeAPI.builder.write(frame_obj_led1);
-// xbeeAPI.builder.write(frame_obj_led2);
 
 start = new Date();
 
@@ -80,12 +74,9 @@ xbeeAPI.parser.on("data", function (frame) {
      var frame_obj_led = {
         type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
         destination64: frame.remote64,
-        // destination16: rem16,
         command: "D2",
         commandParameter: [0x04],
       };
-      console.log(frame_obj_led );
-
       xbeeAPI.builder.write(frame_obj_led);
     }
   } else {
