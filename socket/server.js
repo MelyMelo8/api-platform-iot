@@ -52,14 +52,18 @@ var frame_obj_led = {
   commandParameter: [0x05],
 };
 xbeeAPI.builder.write(frame_obj_led);
+var start = new Date();
 
 xbeeAPI.parser.on("data", function (frame) {
+
 
    if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
 
     if(frame.digitalSamples.DIO1 === 0){
+      var time = new Date() - start;
       console.log("Bouton Appuyé ...\n");
-
+      console.log("Temps récation : ");
+      console.log(time);
       var frame_obj_led = { 
         type: C.FRAME_TYPE.AT_COMMAND,
         command: "D2",
