@@ -21,7 +21,7 @@ class ScoreBoardRepository extends ServiceEntityRepository
         parent::__construct($registry, ScoreBoard::class);
     }
 
-    public function add(ScoreBoard $entity, bool $flush = false): void
+    public function save(ScoreBoard $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 

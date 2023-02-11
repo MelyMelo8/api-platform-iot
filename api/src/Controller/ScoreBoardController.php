@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ScoreBoardController extends AbstractController
 {
 
-    public function __construct(private ManagerRegistry $doctrine, private SerializerInterface $serializer)
+    public function __construct(private readonly ManagerRegistry $doctrine, private readonly SerializerInterface $serializer)
     {
     }
 
