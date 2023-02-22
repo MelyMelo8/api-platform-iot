@@ -18,9 +18,9 @@ client.on('message', (topic, payload) => {
 
     console.log(`[MQTT] Received message on (${topic}): ${message}`);
 
-    args = message.split(" ");
+    let args = message.split(" ");
 
-    fn = mqtt_handlers[args[0]];
+    let fn = mqtt_handlers[args[0]];
 
     if (typeof fn === "function") fn.apply(null, args.slice(1));
 });
