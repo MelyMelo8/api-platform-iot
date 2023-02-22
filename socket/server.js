@@ -84,30 +84,4 @@ xbeeAPI.parser.on("data", function (frame) {
   }
 });
 
-
-// test MQTT
-const mqtt = require('mqtt');
-const topic = 'api-platform-iot';
-
-const client = mqtt.connect('mqtt://127.0.0.1');
-
-function mqttPublish(message) {
-  client.publish(topic, message, { qos: 0, retain: false }, function(error) {
-    if (error) {
-      console.error(error)
-    }
-  });
-}
-
-client.on('connect', function() {
-
-  console.log('[MQTT] Connected')
-
-  client.subscribe(topic, () => console.log(`[MQTT] Subscribed to topic ${topic}`));
-
-  mqttPublish('socket connected');
-});
-
-client.on('message', (topic, payload) => {
-  console.log(`[MQTT] Received message: (${topic}) ${payload.toString()}`);
-});
+require("./mqtt_handler.js").init();
