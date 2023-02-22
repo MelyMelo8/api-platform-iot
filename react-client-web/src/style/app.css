@@ -2,16 +2,39 @@
     margin-top: 50px;
 }
 
-#btn_start, #btn_start:hover{
+.btn_start, .btn_start:hover{
     color: #fff;
     background-color: #218838;
     border-color: #1e7e34;
 }
 
-#btn_start:focus, #btn_start:hover {
+.btn_start:focus, .btn_start:hover, .btn_board:focus, .btn_board:hover {
     text-decoration: none;
 }
 
 .group{
     margin: 5px;
+}
+
+.red-text{
+    color: red;
+}
+
+.blue-text{
+    color: blue;
+}
+
+.text-left{
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+center .text-left{
+    margin-left: 40%;
+}
+
+.btn_board, .btn_board:hover{
+    color: #fff;
+    background-color: #b57d16;
+    border-color: #a26c0f;
 }

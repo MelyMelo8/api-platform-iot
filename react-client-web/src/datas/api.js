@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-const API_URL = "http://localhost:8000";
+const API_URL = "http://127.0.0.1:8000";
 
 /**
  * Squelette pour tous les appels api ajax
@@ -9,7 +9,7 @@ const API_URL = "http://localhost:8000";
  * @param {Object} data (default : {})
  * @return {*}
  */
-function ajax(path, method, data = {}){
+function ajax(path, method = "POST", data = {}){
     return $.ajax(
         `${API_URL}${path}`,
         {
@@ -32,7 +32,7 @@ export function getOneBoard(pseudo){
 }
 
 export function setOneScore(pseudo, score, best_time, average_time){
-    return ajax("/set", {
+    return ajax("/set", 'POST', {
         pseudo: pseudo, score: score, best_time: best_time, average_time: average_time
     });
 }
