@@ -6,8 +6,8 @@ const TOPIC = 'api-platform-iot/socket';
 
 const MQTT_OPTIONS = {
     host: "127.0.0.1",
-    port: "1883",
-    protocol: "mqtt"
+    port: "9001",
+    protocol: "ws"
 }
 
 /**
@@ -51,7 +51,7 @@ export function mqttClientOn(client, setConnectStatus, setPayload){
 
 export function mqttPublish(client, message) {
     if (client) {
-        client.publish(TOPIC, {"msg": message}, error => {
+        client.publish(TOPIC, message, error => {
           if (error) {
             console.log('Publish error: ', error);
           }

@@ -26,10 +26,6 @@ function App(){
     const [currentAverageTime, setCurrentAverageTime] = useState(-1);
     const [currentScore, setCurrentScore] = useState(0);
 
-    if(client){
-        mqttPublish(client, "TEST"); // la connexion passe en ws (websocket) et du coup bah ça marche pas ... 
-    }
-
     return (
         <>
             <CurrentGame pseudo={currentPseudo} best_time={currentBestTime} score={currentScore} time={currentTime} />
