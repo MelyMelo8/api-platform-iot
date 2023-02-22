@@ -13,12 +13,18 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class ScoreBoardController extends AbstractController
 {
+    private array $json_options = [
+        'json_encode_options' => \JSON_UNESCAPED_UNICODE,
+        'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Headers' => 'Origin, X-Requested-With, Content-Type, Accept',
+        'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS'
+    ];
 
     public function __construct(private readonly ManagerRegistry $doctrine, private readonly SerializerInterface $serializer)
     {
     }
 
-    #[Route('/get/tri/{tri}', name: 'getAllBoard')]
+    #[Route('/get/tri/{tri}', name: 'getAllBoard', methods: ['GET', 'POST', 'OPTIONS'])]
     public function getAllBoard(?string $tri) : JsonResponse
     {
         if(!in_array($tri, ["score", "date", "best_time", "average_time"])){
@@ -36,17 +42,17 @@ class ScoreBoardController extends AbstractController
 //        array_multisort(array_column($data, "score"), SORT_ASC, $data);
 
         $data = $this->serializer->serialize($data, 'json');
-        return new JsonResponse($data, Response::HTTP_OK, ['json_encode_options' => \JSON_UNESCAPED_UNICODE], true);
+        return new JsonResponse($data, Response::HTTP_OK, $this->json_options, true);
     }
 
-    #[Route('/get/{pseudo}', name: 'getBoardOnePlayer')]
+    #[Route('/get/{pseudo}', name: 'getBoardOnePlayer', methods: ['GET', 'POST', 'OPTIONS'])]
     public function getBoardOnePlayer(string $pseudo) : JsonResponse
     {
         $board = $this->doctrine->getRepository(ScoreBoard::class)->findBy(["pseudo" => $pseudo], ["score" => "ASC"]);
         $data = $this->getArrayOfScoreBoard($board);
 
         $data = $this->serializer->serialize($data, 'json');
-        return new JsonResponse($data, Response::HTTP_OK, ['json_encode_options' => \JSON_UNESCAPED_UNICODE], true);
+        return new JsonResponse($data, Response::HTTP_OK, $this->json_options, true);
     }
 
     /**
@@ -61,26 +67,30 @@ class ScoreBoardController extends AbstractController
                 "score" => $score->getScore(),
                 "best_time" => $score->getBestTime(),
                 "average_time" => $score->getAverageTime(),
-                "date" => $score->getDate()->format("d/m/Y H:i:s")
+                "date" => $score->getDate()
             ];
         }
         return $data ?? [];
     }
 
-    #[Route('/set', name: 'setScoreBoard')]
+    #[Route('/set', name: 'setScoreBoard', methods: ['GET', 'POST', 'OPTIONS'])]
     public function setScoreBoard(Request $request) : Response
     {
         $doctrineManager = $this->doctrine->getManager();
         $date = new \DateTime();
         $board = new ScoreBoard();
-        $board->setPseudo($request->query->get('pseudo'));
+        $board->setPseudo($request->get('pseudo'));
         $board->setDate($date);
-        $board->setScore($request->query->get('score'));
-        $board->setBestTime($request->query->get('best_time'));
-        $board->setAverageTime($request->query->get('average_time'));
+        $board->setScore($request->get('score') ?? 0);
+        $board->setBestTime($request->get('best_time') ?? 0);
+        $board->setAverageTime($request->get('average_time') ?? 0);
         $doctrineManager->persist($board);
         $doctrineManager->flush();
 
-        return new Response("OK");
+        return new Response("OK", Response::HTTP_OK, [
+            'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Headers' => 'Origin, X-Requested-With, Content-Type, Accept',
+            'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS'
+        ]);
     }
 }

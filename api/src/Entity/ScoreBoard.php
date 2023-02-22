@@ -12,7 +12,7 @@ class ScoreBoard
     #[ORM\Column(type: 'string', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'App\Services\DoctrineIdGenerator')]
-    private ?int $id = null;
+    private ?string $id = null;
 
     #[ORM\Column(length: 150, nullable: false)]
     private string $pseudo;
@@ -27,9 +27,9 @@ class ScoreBoard
     private float $average_time;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeInterface $date;
+    private ?string $date;
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -82,14 +82,14 @@ class ScoreBoard
         return $this;
     }
 
-    public function getDate(): \DateTimeInterface
+    public function getDate(): string
     {
         return $this->date;
     }
 
     public function setDate(?\DateTimeInterface $date): self
     {
-        $this->date = $date;
+        $this->date = $date->format("Y-m-d H:i:s");
 
         return $this;
     }
