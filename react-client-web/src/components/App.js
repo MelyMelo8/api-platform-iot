@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 import CurrentGame from "./game/CurrentGame";
-import { mqttClientOn, mqttConnect, mqttPublish } from "../datas/mqtt";
+import { mqttClientOn, mqttConnect, mqttPublish, mqttPublishGameStart } from "../datas/mqtt";
 
 function App(){
 
     // MQTT 
     const [client, setClient] = useState(null);
     const [connectStatus, setConnectStatus] = useState('offline');
-    const [payload, setPayload] = useState({});
+    const [lastMessage, setLastMessage] = useState("");
+    const [lastMessageTreat, setLastMessageTreat] = useState(true);
+    const [gamePlay, setGamePlay] = useState(false);
 
     // Au premier chargement de la page : connexion MQTT
     useEffect(() => mqttConnect(setConnectStatus, setClient), []);
 
     // A chaque changement de client (chaque retour de MQTT)
     useEffect(() => {
-        mqttClientOn(client, setConnectStatus, setPayload);
+        mqttClientOn(client, setConnectStatus, setLastMessage, setLastMessageTreat);
     }, [client]);
-      
-    console.log(client);
 
     // CURRENT GAME 
     const [currentPseudo, setCurrentPseudo] = useState("toto");
@@ -28,7 +28,13 @@ function App(){
 
     return (
         <>
-            <CurrentGame pseudo={currentPseudo} best_time={currentBestTime} score={currentScore} time={currentTime} />
+            {gamePlay ? 
+                <CurrentGame pseudo={currentPseudo} best_time={currentBestTime} score={currentScore} time={currentTime} /> 
+            : 
+                <center>
+                    <button type="button" onClick={() => mqttPublishGameStart(client, setGamePlay)}>Commencer la partie</button>
+                </center>
+            }
         </>
     );
 }
