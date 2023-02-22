@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CurrentGame from "./game/CurrentGame";
-import { mqttClientOn, mqttConnect, mqttPublish, mqttPublishGameStart } from "../datas/mqtt";
+import { mqttClientOn, mqttConnect, mqttPublish, mqttPublishGameStart, treatLastMessage } from "../datas/mqtt";
+import "../style/app.css";
 
 function App(){
 
@@ -14,7 +15,7 @@ function App(){
     // Au premier chargement de la page : connexion MQTT
     useEffect(() => mqttConnect(setConnectStatus, setClient), []);
 
-    // A chaque changement de client (chaque retour de MQTT)
+    // A chaque changement dans le client (chaque retour de MQTT)
     useEffect(() => {
         mqttClientOn(client, setConnectStatus, setLastMessage, setLastMessageTreat);
     }, [client]);
@@ -26,13 +27,23 @@ function App(){
     const [currentAverageTime, setCurrentAverageTime] = useState(-1);
     const [currentScore, setCurrentScore] = useState(0);
 
+    // Traitement du dernier message reçu par MQTT 
+    treatLastMessage(
+        lastMessageTreat, setLastMessageTreat, lastMessage,
+        setCurrentAverageTime, setCurrentBestTime, setCurrentScore, setCurrentTime, setGamePlay
+    );
+
     return (
         <>
             {gamePlay ? 
                 <CurrentGame pseudo={currentPseudo} best_time={currentBestTime} score={currentScore} time={currentTime} /> 
             : 
-                <center>
-                    <button type="button" onClick={() => mqttPublishGameStart(client, setGamePlay)}>Commencer la partie</button>
+                <center id="hors_partie">
+                    <div className="group">
+                        <label htmlFor="pseudo">Pseudo : </label>
+                        <input id="pseudo" type="text" value={currentPseudo} onChange={(el) => setCurrentPseudo(el.target.value)} />
+                    </div>
+                    <button id="btn_start" type="button" onClick={() => mqttPublishGameStart(client, setGamePlay)}>Commencer la partie</button>
                 </center>
             }
         </>

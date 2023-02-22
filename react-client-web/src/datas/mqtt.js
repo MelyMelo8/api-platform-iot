@@ -6,7 +6,8 @@ const TOPIC = 'api-platform-iot/socket';
 const MQTT_OPTIONS = {
     host: "127.0.0.1",
     port: "9001",
-    protocol: "ws"
+    protocol: "ws",
+    keepalive: 65535 // paramètre pour limiter le nombre de reconnexion sinon à peut près toute les secondes ... C'est le max accepté par Mosquitto ;)
 }
 
 /**
@@ -49,7 +50,7 @@ export function mqttClientOn(client, setConnectStatus, setLastMessage, setLastMe
 
 export function mqttPublish(client, message) {
     if (client) {
-        client.publish(TOPIC, message, error => {
+        client.publish(TOPIC, message, { QoS: 2 }, error => {
           if (error) {
             console.log('Publish error: ', error);
           } else {
@@ -70,30 +71,26 @@ export function treatLastMessage(
     setCurrentAverageTime, setCurrentBestTime, setCurrentScore, setCurrentTime, setGamePlay
 ){
     if(!treatLastMessage){
-        let msg = lastMessage.split(" ");
-        if (msg.length > 0){
+        if(lastMessage === "game_over"){
+            setGamePlay(false);
+        } else {
+            let msg = lastMessage.split(" ");
             switch(msg[0]){
                 case "score":
-                    setCurrentScore(msg[1]);
+                    setCurrentScore(msg[1] ?? 0);
                     break;
                 case "best_time":
-                    setCurrentBestTime(msg[1]);
+                    setCurrentBestTime(msg[1] ?? 0);
                     break;
                 case "average_time":
-                    setCurrentAverageTime(msg[1]);
+                    setCurrentAverageTime(msg[1] ?? 0);
                     break;
                 case "time":
-                    setCurrentTime(msg[1]);
+                    setCurrentTime(msg[1] ?? 0);
                     break;
                 default:
                     console.error(`Message ${lastMessage} non traité par nos services`);
                     break;
-            }
-        } else {
-            if(lastMessage === "game_over"){
-                setGamePlay(false);
-            } else {
-                console.error(`Message ${lastMessage} non traité par nos services`);
             }
         }
         setLastMessageTreat(true);

@@ -1,0 +1,17 @@
+#hors_partie{
+    margin-top: 50px;
+}
+
+#btn_start, #btn_start:hover{
+    color: #fff;
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+#btn_start:focus, #btn_start:hover {
+    text-decoration: none;
+}
+
+.group{
+    margin: 5px;
+}
