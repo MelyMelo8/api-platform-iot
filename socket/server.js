@@ -84,4 +84,5 @@ xbeeAPI.parser.on("data", function (frame) {
   }
 });
 
-require("./mqtt_handler.js").init();
+const mqtt = require("./mqtt_handler.js");
+mqtt.publish("hello_world from_socket");
