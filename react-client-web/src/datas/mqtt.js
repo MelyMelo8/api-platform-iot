@@ -80,7 +80,7 @@ export function treatLastMessage(
                     setCurrentScore(msg[1] ?? 0);
                     break;
                 case "time":
-                    let time = $msg[1] ?? 0;
+                    let time = msg[1] ?? 0;
                     setCurrentTime(time);
                     setCurrentTimeMin(time < currentTimeMin ? time : currentTimeMin);
                     setCurrentTimeSomme(currentTimeSomme + time);

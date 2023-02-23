@@ -67,7 +67,7 @@ function App(){
             <>
                 <button className="btn_board" onClick={() => setGameBoard(true)}>Voir le tableau des scores</button>
                 {gamePlay ? 
-                    <CurrentGame pseudo={currentPseudo} best_time={currentBestTime} score={currentScore} time={currentTime} /> 
+                    <CurrentGame pseudo={currentPseudo} best_time={currentTimeSomme / currentScore} score={currentScore} time={currentTime} /> 
                 : 
                     <center id="hors_partie">
                         {currentScore === 0 ? 
