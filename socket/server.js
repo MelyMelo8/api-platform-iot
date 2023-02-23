@@ -112,13 +112,8 @@ xbeeAPI.parser.on("data", function (frame) {
       }, "3000")
       
       //Envoie info game
-      mqtt.publish('game_over');
-      setTimeout(() => {
-        mqtt.publish('best_time '+bestTime);
-      }, "1000")
       var average = totalTime/score;
-      mqtt.publish('average_time '+average);
-      //set var
+      mqtt.publish('game_over ' + bestTime + ' ' + average);
       start = false;
       lose = false;
       fisrtled=true;
@@ -161,8 +156,7 @@ xbeeAPI.parser.on("data", function (frame) {
             totalTime = totalTime + time;
             //score
             score = score +1;
-            mqtt.publish('score '+score);
-            mqtt.publish('time '+time);
+            mqtt.publish('score_time '+score + ' ' + time);
             //modif temps réaction
             timeMax = timeMax-25;
             //Tirage Aléatoire

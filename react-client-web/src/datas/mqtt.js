@@ -71,27 +71,20 @@ export function treatLastMessage(
     setCurrentBestTime, setCurrentAverageTime, setCurrentScore, setCurrentTime, setGamePlay
 ){
     if(!treatLastMessage){
-        if(lastMessage === "game_over"){
-            setGamePlay(false);
-        } else {
-            let msg = lastMessage.split(" ");
-            switch(msg[0]){
-                case "score":
-                    setCurrentScore(msg[1] ?? 0);
-                    break;
-                case "time":
-                    setCurrentTime(msg[1] ?? 0);
-                    break;
-                case "best_time":
-                    setCurrentBestTime(msg[1] ?? 0);
-                    break;
-                case "average_time":
-                    setCurrentAverageTime(msg[1] ?? 0);
-                    break;
-                default:
-                    console.error(`Message ${lastMessage} non traité par nos services`);
-                    break;
-            }
+        let msg = lastMessage.split(" ");
+        switch(msg[0]){
+            case "score_time":
+                setCurrentScore(msg[1] ?? 0);
+                setCurrentTime(msg[2] ?? 0);
+                break;
+            case "game_over":
+                setGamePlay(false);
+                setCurrentBestTime(msg[1] ?? 0);
+                setCurrentAverageTime(msg[2] ?? 0);
+                break;
+            default:
+                console.error(`Message ${lastMessage} non traité par nos services`);
+                break;
         }
         setLastMessageTreat(true);
     }
