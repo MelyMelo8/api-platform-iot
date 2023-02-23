@@ -48,7 +48,12 @@ let serialport = new SerialPort(SERIAL_PORT, {
 serialport.pipe(xbeeAPI.parser);
 xbeeAPI.builder.pipe(serialport);
 
-var start;
+var timer;
+var timeMax;
+var score;
+var fisrtled;
+var lose;
+
 
 serialport.on("open", function () {
   var frame_obj = { // AT Request to be sent
@@ -115,12 +120,12 @@ xbeeAPI.parser.on("data", function (frame) {
       };
       xbeeAPI.builder.write(frame_obj_led1);
       fisrtled=false;
-      start = new Date();
+      timer = new Date();
 
     } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
       if (frame.digitalSamples.DIO1 === 0) {
         if(frame.remote64==destination){
-          var time = new Date() - start;
+          var time = new Date() - timer;
           console.log("Temps réaction : ");
           console.log(time);
           //On etteind la led
@@ -144,7 +149,7 @@ xbeeAPI.parser.on("data", function (frame) {
               commandParameter: [0x05],
             };
             xbeeAPI.builder.write(frame_obj_led1);
-            start = new Date();
+            timer = new Date();
           } else {
             //CAS PERDU
             //on allume toute les led
