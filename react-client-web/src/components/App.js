@@ -85,8 +85,8 @@ function App(){
                                 <div className="group text-left">
                                     Score : <b>{currentScore}</b><br/> 
                                     Temps du dernier : {currentTime}ms <br/><br/>
-                                    Meilleur Temps : {currentBestTime}ms <br/>
-                                    Temps Moyen : {currentAverageTime}ms 
+                                    Meilleur Temps : {currentTimeMin}ms <br/>
+                                    Temps Moyen : {currentTimeSomme / currentScore}ms 
                                 </div>
                                 {!isSave ?
                                     <button className="btn_warn" type="button" onClick={() => save()}>Enregistrer ce score en base de données</button>
