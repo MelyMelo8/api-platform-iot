@@ -124,13 +124,13 @@ xbeeAPI.parser.on("data", function (frame) {
       //Tirage Aléatoire
       destination = getRandom(1, 5);
       //Allumage led
-      var frame_obj_led1 = {
+      var frame_obj_led = {
         type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
         destination64: destination,
         command: "D2",
         commandParameter: [0x05],
       };
-      xbeeAPI.builder.write(frame_obj_led1);
+      xbeeAPI.builder.write(frame_obj_led);
       fisrtled=false;
       timer = new Date();
 
@@ -156,13 +156,13 @@ xbeeAPI.parser.on("data", function (frame) {
             //Tirage Aléatoire
             destination = getRandom(1, 5);
             //Allumage led
-            var frame_obj_led1 = {
+            var frame_obj_led = {
               type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
               destination64: destination,
               command: "D2",
               commandParameter: [0x05],
             };
-            xbeeAPI.builder.write(frame_obj_led1);
+            xbeeAPI.builder.write(frame_obj_led);
             timer = new Date();
           } else {
             //CAS PERDU
@@ -176,7 +176,7 @@ xbeeAPI.parser.on("data", function (frame) {
             xbeeAPI.builder.write(frame_obj_led);
             lose = true;
           }
-        } else { //Mauvais bouton
+        } /*else { //Mauvais bouton
           //CAS PERDU
           //on allume toute les led
           var frame_obj_led = {
@@ -187,7 +187,7 @@ xbeeAPI.parser.on("data", function (frame) {
           };
           xbeeAPI.builder.write(frame_obj_led);
           lose = true;
-        }
+        }*/
       }
     }
   }
