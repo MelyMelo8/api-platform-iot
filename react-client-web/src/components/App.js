@@ -65,21 +65,21 @@ function App(){
 
         return (
             <>
-                <button className="btn_board" onClick={() => setGameBoard(true)}>Voir le tableau des scores</button>
+                <h1 className="title">Reflex Wall</h1>
                 {gamePlay ? 
                     <CurrentGame pseudo={currentPseudo} best_time={currentTimeSomme / currentScore} score={currentScore} time={currentTime} /> 
-                : 
+                    : 
                     <center id="hors_partie">
                         {currentScore === 0 ? 
                             <>
                                 <div className="group">
                                     <label htmlFor="pseudo">Pseudo : </label>
-                                    <input id="pseudo" type="text" value={currentPseudo} onChange={(el) => setCurrentPseudo(el.target.value)} />
+                                    <input id="pseudo" className="input" type="text" value={currentPseudo} onChange={(el) => setCurrentPseudo(el.target.value)} />
                                 </div>
-                                <button className="btn_start" type="button" onClick={() => mqttPublishGameStart(client, setGamePlay)}>Commencer la partie</button>
+                                <button className="button btn_start" type="button" onClick={() => mqttPublishGameStart(client, setGamePlay)}>Commencer la partie</button>
                             </>
                         : 
-                            <div className="group">
+                        <div className="group">
                                 <b className="red-text">Partie Terminée</b><br/><br/>
                                 Joueur : <b className="blue-text">{currentPseudo}</b><br/><br/>
                                 <div className="group text-left">
@@ -90,13 +90,14 @@ function App(){
                                 </div>
                                 {!isSave ?
                                     <button className="btn_warn" type="button" onClick={() => save()}>Enregistrer ce score en base de données</button>
-                                :
+                                    :
                                     <button className="btn_start" type="button" onClick={() => rejouer(client, setGamePlay)}>Rejouer une partie</button>
                                 }
                             </div>
                         }
                     </center>
                 }
+                <button className="button btn_board" onClick={() => setGameBoard(true)}>Voir le tableau des scores</button>
             </>
         );
     }

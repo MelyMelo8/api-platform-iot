@@ -1,20 +1,54 @@
-#hors_partie{
-    margin-top: 50px;
+.title {
+    text-align: center;
+    font-size: 56px;
 }
 
-.btn_start, .btn_start:hover{
+.group {
+    white-space: nowrap;
+}
+
+.input, .button {
+    height: 2rem;
+    border-radius: 8px;
+}
+
+.input {
+    padding-left: var(--spacing-l);
+}
+
+.input {
+    margin-left: var(--spacing-s);
+    border: 1px solid #acacac;
+}
+
+.button {
+    font-weight: bold;
+    text-align: center;
+    border: none;
+
+    transition: all 0.2s ease;
+}
+
+.button:hover,
+.button:focus,
+.button:focus-within {
+    transform: scale(1.02);
+    filter: brightness(90%);
+}
+
+.btn_start {
+    width: 100%;
+    margin-block: var(--spacing-l) var(--spacing-xl);
     color: #fff;
     background-color: #218838;
     border-color: #1e7e34;
 }
 
-.btn_start:focus, .btn_start:hover, .btn_board:focus, .btn_board:hover {
-    text-decoration: none;
+.btn_board {
+    background-color: #dabe8a;
 }
 
-.group{
-    margin: 5px;
-}
+/***************/
 
 .red-text{
     color: red;
@@ -31,10 +65,4 @@
 
 center .text-left{
     margin-left: 40%;
-}
-
-.btn_board, .btn_board:hover{
-    color: #fff;
-    background-color: #b57d16;
-    border-color: #a26c0f;
 }

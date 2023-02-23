@@ -1,0 +1,21 @@
+#scoreboard {
+    border-spacing: 0;
+}
+
+#scoreboard thead th {
+    padding: var(--spacing-xs) var(--spacing-m);
+    border-bottom: 3px double var(--fnt-color);
+}
+
+#scoreboard th:not(:first-child),
+#scoreboard td:not(:first-child) {
+    border-left: 1px solid var(--fnt-color);
+}
+
+#scoreboard tr:nth-child(2n) {
+    background-color: var(--bgd-color-alt);
+}
+
+.btn-return, .btn-return:hover {
+    background-color: var(--bgd-color-alt);
+}

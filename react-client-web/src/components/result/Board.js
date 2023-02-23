@@ -1,11 +1,12 @@
 import React from "react";
 import { getAllScores, getOneBoard } from "../../datas/api";
+import "../../style/board.css"
 
 function Board({setIsBoard, pseudo = "", scores}){    
     return (
         <>
             <h2>Tableau des scores {pseudo !== "" && <>de {pseudo}</>}</h2>
-            <table border={1} style={{margin:15}}>
+            <table id="scoreboard" style={{margin:15}}>
                 <thead>
                     <tr>
                         {pseudo === "" && <th>Pseudo</th>}
@@ -27,7 +28,7 @@ function Board({setIsBoard, pseudo = "", scores}){
                     })}
                 </tbody>
             </table>
-            <button className="btn_return" onClick={() => setIsBoard(false)}>Retour à la page principale</button>
+            <button className="button btn_return" onClick={() => setIsBoard(false)}>Retour à la page principale</button>
         </>
     );
 }
