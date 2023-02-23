@@ -34,28 +34,28 @@ function App(){
     // CURRENT GAME 
     const [currentPseudo, setCurrentPseudo] = useState("toto");
     const [currentTime, setCurrentTime] = useState(-1);
-    const [currentTimeMin, setCurrentTimeMin] = useState(-1);
-    const [currentTimeSomme, setCurrentTimeSomme] = useState(0);
+    const [currentBestTime, setCurrentBestTime] = useState(-1);
+    const [currentAverageTime, setCurrentAverageTime] = useState(-1);
     const [currentScore, setCurrentScore] = useState(0);
     const [isSave, setIsSave] = useState(false);
 
     // Traitement du dernier message reçu par MQTT 
     treatLastMessage(
-        lastMessageTreat, setLastMessageTreat, lastMessage, setCurrentTimeMin, setCurrentTimeSomme,
-        currentTimeSomme, currentTimeMin, setCurrentScore, setCurrentTime, setGamePlay
+        lastMessageTreat, setLastMessageTreat, lastMessage,
+        setCurrentBestTime, setCurrentAverageTime, setCurrentScore, setCurrentTime, setGamePlay
     );
 
     function rejouer(client, setGamePlay){
         setCurrentTime(-1);
         setCurrentScore(0);
-        setCurrentTimeMin(-1);
-        setCurrentTimeSomme(0);
+        setCurrentAverageTime(-1);
+        setCurrentBestTime(-1);
         setIsSave(false);
         mqttPublishGameStart(client, setGamePlay);
     }
 
     function save(){
-        setOneScore(currentPseudo, currentScore, currentTimeMin, (currentTimeSomme / currentScore));
+        setOneScore(currentPseudo, currentScore, currentBestTime, currentAverageTime);
         setIsSave(true);
     }
 
@@ -67,7 +67,7 @@ function App(){
             <>
                 <h1 className="title">Reflex Wall</h1>
                 {gamePlay ? 
-                    <CurrentGame pseudo={currentPseudo} best_time={currentTimeMin} score={currentScore} time={currentTime} /> 
+                    <CurrentGame pseudo={currentPseudo} best_time={currentBestTime} score={currentScore} time={currentTime} /> 
                     : 
                     <center id="hors_partie">
                         {currentScore === 0 ? 
@@ -85,8 +85,8 @@ function App(){
                                 <div className="group text-left">
                                     Score : <b>{currentScore}</b><br/> 
                                     Temps du dernier : {currentTime}ms <br/><br/>
-                                    Meilleur Temps : {currentTimeMin}ms <br/>
-                                    Temps Moyen : {currentTimeSomme / currentScore}ms 
+                                    Meilleur Temps : {currentBestTime}ms <br/>
+                                    Temps Moyen : {currentAverageTime}ms 
                                 </div>
                                 {!isSave ?
                                     <button className="btn_warn" type="button" onClick={() => save()}>Enregistrer ce score en base de données</button>

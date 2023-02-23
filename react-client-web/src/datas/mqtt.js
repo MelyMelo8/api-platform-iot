@@ -67,8 +67,8 @@ export function mqttPublishGameStart(client, setGamePlay){
 
 
 export function treatLastMessage(
-    treatLastMessage, setLastMessageTreat, lastMessage, setCurrentTimeMin, setCurrentTimeSomme,
-    currentTimeSomme, currentTimeMin, setCurrentScore, setCurrentTime, setGamePlay
+    treatLastMessage, setLastMessageTreat, lastMessage,
+    setCurrentBestTime, setCurrentAverageTime, setCurrentScore, setCurrentTime, setGamePlay
 ){
     if(!treatLastMessage){
         if(lastMessage === "game_over"){
@@ -80,10 +80,13 @@ export function treatLastMessage(
                     setCurrentScore(msg[1] ?? 0);
                     break;
                 case "time":
-                    let time = msg[1] ?? 0;
-                    setCurrentTime(time);
-                    setCurrentTimeMin(time < currentTimeMin ? time : currentTimeMin);
-                    setCurrentTimeSomme(currentTimeSomme + time);
+                    setCurrentTime(msg[1] ?? 0);
+                    break;
+                case "best_time":
+                    setCurrentBestTime(msg[1] ?? 0);
+                    break;
+                case "average_time":
+                    setCurrentAverageTime(msg[1] ?? 0);
                     break;
                 default:
                     console.error(`Message ${lastMessage} non traité par nos services`);
