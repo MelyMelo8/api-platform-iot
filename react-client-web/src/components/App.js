@@ -34,28 +34,28 @@ function App(){
     // CURRENT GAME 
     const [currentPseudo, setCurrentPseudo] = useState("toto");
     const [currentTime, setCurrentTime] = useState(-1);
-    const [currentBestTime, setCurrentBestTime] = useState(-1);
-    const [currentAverageTime, setCurrentAverageTime] = useState(-1);
+    const [currentTimeMin, setCurrentTimeMin] = userState(-1);
+    const [currentTimeSomme, setCurrentTimeSomme] = userState(0);
     const [currentScore, setCurrentScore] = useState(0);
     const [isSave, setIsSave] = useState(false);
 
     // Traitement du dernier message reçu par MQTT 
     treatLastMessage(
-        lastMessageTreat, setLastMessageTreat, lastMessage,
-        setCurrentAverageTime, setCurrentBestTime, setCurrentScore, setCurrentTime, setGamePlay
+        lastMessageTreat, setLastMessageTreat, lastMessage, setCurrentTimeMin, setCurrentTimeSomme,
+        currentTimeSomme, currentTimeMin, setCurrentScore, setCurrentTime, setGamePlay
     );
 
     function rejouer(client, setGamePlay){
-        setCurrentAverageTime(-1);
-        setCurrentBestTime(-1);
         setCurrentTime(-1);
         setCurrentScore(0);
+        setCurrentTimeMin(-1);
+        setCurrentTimeSomme(0);
         setIsSave(false);
         mqttPublishGameStart(client, setGamePlay);
     }
 
     function save(){
-        setOneScore(currentPseudo, currentScore, currentBestTime, currentAverageTime);
+        setOneScore(currentPseudo, currentScore, currentTimeMin, (currentTimeSomme / currentScore));
         setIsSave(true);
     }
 
