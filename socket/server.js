@@ -111,7 +111,13 @@ xbeeAPI.parser.on("data", function (frame) {
         command: "D2",
         commandParameter: [0x04],
       };
-      //QUITTER PARTIE??????????????????????????????????????????????????????
+      //Quitter Partie
+      mqtt.publish('game_over');
+      start = false;
+      lose = false;
+      fisrtled=true;
+      score=0;
+      timeMax=10000;
     } else if(fisrtled==true){
       //Tirage Aléatoire
       destination = getRandom(1, 5);
@@ -142,6 +148,8 @@ xbeeAPI.parser.on("data", function (frame) {
           xbeeAPI.builder.write(frame_obj_led);
           if(time<timeMax){
             score = scrore +1;
+            mqtt.publish('score '+score);
+            mqtt.publish('time '+time);
             timeMax = timeMax-10;
             //Tirage Aléatoire
             destination = getRandom(1, 5);
