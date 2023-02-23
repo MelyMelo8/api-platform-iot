@@ -53,6 +53,7 @@ var timeMax;
 var score;
 var fisrtled;
 var lose;
+var start;
 
 
 serialport.on("open", function () {
