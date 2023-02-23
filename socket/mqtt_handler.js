@@ -27,8 +27,5 @@ client.on('message', (topic, payload) => {
 
 exports.publish = (message) => client.publish(TOPIC, message);
 
-// Define handlers here
+exports.setStartCallback = (callback) => mqtt_handlers['game_start'] = callback;
 
-mqtt_handlers['hello_world'] = function (arg) {
-    console.log(`Hello World! (${arg})`);
-}

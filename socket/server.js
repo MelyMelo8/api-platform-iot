@@ -5,6 +5,8 @@ var C = xbee_api.constants;
 //var storage = require("./storage")
 require('dotenv').config()
 
+const mqtt = require("./mqtt_handler.js");
+
 const BROADCAST_ADDRESS = 'FFFFFFFFFFFFFFFF';
 
 const SERIAL_PORT = process.env.SERIAL_PORT;
@@ -53,8 +55,9 @@ var timeMax;
 var score;
 var fisrtled;
 var lose;
-var start;
 
+var start;
+mqtt.setStartCallback(() => start = true);
 
 serialport.on("open", function () {
   var frame_obj = { // AT Request to be sent
@@ -179,6 +182,3 @@ xbeeAPI.parser.on("data", function (frame) {
     }
   }
 });
-
-const mqtt = require("./mqtt_handler.js");
-mqtt.publish("hello_world from_socket");
