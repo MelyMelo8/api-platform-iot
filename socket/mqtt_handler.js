@@ -25,7 +25,7 @@ client.on('message', (topic, payload) => {
     if (typeof fn === "function") fn.apply(null, args.slice(1));
 });
 
-exports.publish = (message) => client.publish(TOPIC, message);
+exports.publish = (message) => client.publish(TOPIC, message, {QoS: 2});
 
 exports.setStartCallback = (callback) => mqtt_handlers['game_start'] = callback;
 
