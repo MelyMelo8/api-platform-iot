@@ -34,8 +34,8 @@ function App(){
     // CURRENT GAME 
     const [currentPseudo, setCurrentPseudo] = useState("toto");
     const [currentTime, setCurrentTime] = useState(-1);
-    const [currentTimeMin, setCurrentTimeMin] = userState(-1);
-    const [currentTimeSomme, setCurrentTimeSomme] = userState(0);
+    const [currentTimeMin, setCurrentTimeMin] = useState(-1);
+    const [currentTimeSomme, setCurrentTimeSomme] = useState(0);
     const [currentScore, setCurrentScore] = useState(0);
     const [isSave, setIsSave] = useState(false);
 
