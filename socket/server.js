@@ -92,36 +92,31 @@ start=false;
 xbeeAPI.parser.on("data", function (frame) {
   if(start==true){
     if(lose==true){
-      //quit game
-      // set timeout au lieu de sleep
+      //On allume toute les led
       var frame_obj_led = {
         type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
         destination64: BROADCAST_ADDRESS,
         command: "D2",
         commandParameter: [0x05],
       };
-      
       xbeeAPI.builder.write(frame_obj_led);
-      // var frame_obj_led = {
-      //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-      //   destination64: BROADCAST_ADDRESS,
-      //   command: "D2",
-      //   commandParameter: [0x05],
-      // };
-      // xbeeAPI.builder.write(frame_obj_led);
+      //eteindre les led
+      setTimeout(() => {
+        var frame_obj_led = {
+          type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+          destination64: BROADCAST_ADDRESS,
+          command: "D2",
+          commandParameter: [0x04],
+        };
+        xbeeAPI.builder.write(frame_obj_led);
+      }, "3000")
       
-      // xbeeAPI.builder.write(frame_obj_led);
-      // var frame_obj_led = {
-      //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-      //   destination64: BROADCAST_ADDRESS,
-      //   command: "D2",
-      //   commandParameter: [0x04],
-      // };
-      //Quitter Partie
+      //Envoie info game
       mqtt.publish('game_over');
       mqtt.publish('best_time '+bestTime);
       var average = totalTime/score;
       mqtt.publish('average_time '+average);
+      //set var
       start = false;
       lose = false;
       fisrtled=true;
@@ -138,16 +133,15 @@ xbeeAPI.parser.on("data", function (frame) {
         commandParameter: [0x05],
       };
       xbeeAPI.builder.write(frame_obj_led);
-      fisrtled=false;
+      //set timer 
       timer = new Date();
+      fisrtled=false;
 
     } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
       if (frame.digitalSamples.DIO1 === 0) {
         if(frame.remote64==destination.toLowerCase()){
-          console.log(frame);
+          //calcul temps réact
           var time = new Date() - timer;
-          console.log("Temps réaction : ");
-          console.log(time);
           //On etteind la led
           var frame_obj_led = {
               type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
@@ -158,13 +152,16 @@ xbeeAPI.parser.on("data", function (frame) {
           xbeeAPI.builder.write(frame_obj_led);
           //Verification Timer
           if(time<timeMax){
+            //best + average
             if(time<bestTime){
               bestTime = time;
             }
             totalTime = totalTime + time;
+            //score
             score = score +1;
             mqtt.publish('score '+score);
             mqtt.publish('time '+time);
+            //modif temps réaction
             timeMax = timeMax-25;
             //Tirage Aléatoire
             destination = getRandom(1, 5);
@@ -176,6 +173,7 @@ xbeeAPI.parser.on("data", function (frame) {
               commandParameter: [0x05],
             };
             xbeeAPI.builder.write(frame_obj_led);
+            //lancer timer
             timer = new Date();
           } else {
             //CAS PERDU
@@ -187,6 +185,7 @@ xbeeAPI.parser.on("data", function (frame) {
               commandParameter: [0x05],
             };
             xbeeAPI.builder.write(frame_obj_led);
+            //on pert
             lose = true;
           }
         } else { //Mauvais bouton
@@ -199,6 +198,7 @@ xbeeAPI.parser.on("data", function (frame) {
             commandParameter: [0x05],
           };
           xbeeAPI.builder.write(frame_obj_led);
+          //on pert
           lose = true;
         }
       }
