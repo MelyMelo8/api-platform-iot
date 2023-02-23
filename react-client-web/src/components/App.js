@@ -67,7 +67,7 @@ function App(){
             <>
                 <h1 className="title">Reflex Wall</h1>
                 {gamePlay ? 
-                    <CurrentGame pseudo={currentPseudo} best_time={currentTimeSomme / currentScore} score={currentScore} time={currentTime} /> 
+                    <CurrentGame pseudo={currentPseudo} best_time={currentTimeMin} score={currentScore} time={currentTime} /> 
                     : 
                     <center id="hors_partie">
                         {currentScore === 0 ? 

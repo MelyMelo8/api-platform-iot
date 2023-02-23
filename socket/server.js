@@ -14,7 +14,7 @@ const SERIAL_PORT = process.env.SERIAL_PORT;
 // On renvoie un nombre aléatoire entre une valeur min (incluse)
 // et une valeur max (exclue)
 function getRandom(min, max) {
-  let number = 2; //Math.trunc(Math.random()) * (max - min) + min;
+  let number = Math.trunc(Math.random() * (max - min) + min);
   let destination;
   switch (number) {
     case 1:
@@ -81,7 +81,7 @@ serialport.on("open", function () {
 lose = false;
 fisrtled=true;
 score=0;
-timeMax=10000;
+timeMax=2500;
 start=false;
 });
 
@@ -119,7 +119,7 @@ xbeeAPI.parser.on("data", function (frame) {
       lose = false;
       fisrtled=true;
       score=0;
-      timeMax=10000;
+      timeMax=2500;
     } else if(fisrtled==true){
       //Tirage Aléatoire
       destination = getRandom(1, 5);
@@ -136,7 +136,8 @@ xbeeAPI.parser.on("data", function (frame) {
 
     } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
       if (frame.digitalSamples.DIO1 === 0) {
-        if(frame.remote64==destination){
+        if(frame.remote64==destination.toLowerCase()){
+          console.log(frame);
           var time = new Date() - timer;
           console.log("Temps réaction : ");
           console.log(time);
@@ -149,10 +150,10 @@ xbeeAPI.parser.on("data", function (frame) {
           };
           xbeeAPI.builder.write(frame_obj_led);
           if(time<timeMax){
-            score = scrore +1;
+            score = score +1;
             mqtt.publish('score '+score);
             mqtt.publish('time '+time);
-            timeMax = timeMax-10;
+            timeMax = timeMax-25;
             //Tirage Aléatoire
             destination = getRandom(1, 5);
             //Allumage led
@@ -176,7 +177,7 @@ xbeeAPI.parser.on("data", function (frame) {
             xbeeAPI.builder.write(frame_obj_led);
             lose = true;
           }
-        } /*else { //Mauvais bouton
+        } else { //Mauvais bouton
           //CAS PERDU
           //on allume toute les led
           var frame_obj_led = {
@@ -187,7 +188,7 @@ xbeeAPI.parser.on("data", function (frame) {
           };
           xbeeAPI.builder.write(frame_obj_led);
           lose = true;
-        }*/
+        }
       }
     }
   }
