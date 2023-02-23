@@ -113,7 +113,9 @@ xbeeAPI.parser.on("data", function (frame) {
       
       //Envoie info game
       mqtt.publish('game_over');
-      mqtt.publish('best_time '+bestTime);
+      setTimeout(() => {
+        mqtt.publish('best_time '+bestTime);
+      }, "1000")
       var average = totalTime/score;
       mqtt.publish('average_time '+average);
       //set var
