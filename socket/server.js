@@ -6,10 +6,32 @@ var C = xbee_api.constants;
 require('dotenv').config()
 
 const BROADCAST_ADDRESS = 'FFFFFFFFFFFFFFFF';
-const ZIBGEE_1 = '0013A20041582EF0';
-const ZIGBEE_2 = '0013A20041C345D2';
 
 const SERIAL_PORT = process.env.SERIAL_PORT;
+
+// On renvoie un nombre aléatoire entre une valeur min (incluse)
+// et une valeur max (exclue)
+function getRandom(min, max) {
+  number =  Math.random() * (max - min) + min;
+  switch (number) {
+    case 1:
+      destination = process.env.ZIBGEE_1;
+      break;
+    case 2:
+      destination = process.env.ZIBGEE_2;
+      break;
+    case 3:
+      destination = process.env.ZIBGEE_3;
+      break;
+    case 4:
+      destination = process.env.ZIBGEE_4;
+      break;
+    default:
+      break;
+  }
+  return destination;
+}
+
 
 var xbeeAPI = new xbee_api.XBeeAPI({
   api_mode: 1
@@ -45,42 +67,107 @@ serialport.on("open", function () {
   };
   xbeeAPI.builder.write(frame_obj);
 
-//Allumage led
-var frame_obj_led1 = {
-  type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-  destination64: ZIBGEE_1,//BROADCAST_ADDRESS,
-  command: "D2",
-  commandParameter: [0x05],
-};
-xbeeAPI.builder.write(frame_obj_led1);
-
-start = new Date();
-
-
+lose = false;
+fisrtled=true;
+score=0;
+timeMax=10000;
 });
 
 xbeeAPI.parser.on("data", function (frame) {
+  if(lose==true){
+    //quit game
+    sleep(500);
+    var frame_obj_led = {
+      type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+      destination64: BROADCAST_ADDRESS,
+      command: "D2",
+      commandParameter: [0x04],
+    };
+    sleep(500);
+    xbeeAPI.builder.write(frame_obj_led);
+    var frame_obj_led = {
+      type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+      destination64: BROADCAST_ADDRESS,
+      command: "D2",
+      commandParameter: [0x05],
+    };
+    xbeeAPI.builder.write(frame_obj_led);
+    sleep(500);
+    xbeeAPI.builder.write(frame_obj_led);
+    var frame_obj_led = {
+      type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+      destination64: BROADCAST_ADDRESS,
+      command: "D2",
+      commandParameter: [0x04],
+    };
+    //QUITTER PARTIE??????????????????????????????????????????????????????
+  } else if(fisrtled==true){
+    //Tirage Aléatoire
+    destination = getRandom(1, 5);
+    //Allumage led
+    var frame_obj_led1 = {
+      type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+      destination64: destination,
+      command: "D2",
+      commandParameter: [0x05],
+    };
+    xbeeAPI.builder.write(frame_obj_led1);
+    fisrtled=false;
+    start = new Date();
 
-  if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
+  } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
     if (frame.digitalSamples.DIO1 === 0) {
-      var time = new Date() - start;
-      var rem16 = frame.remote16;
-
-
-      console.log("Temps réaction : ");
-      console.log(time);
-      console.log(rem16);
-
-     var frame_obj_led = {
-        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-        destination64: frame.remote64,
-        command: "D2",
-        commandParameter: [0x04],
-      };
-      xbeeAPI.builder.write(frame_obj_led);
+      if(frame.remote64==destination){
+        var time = new Date() - start;
+        console.log("Temps réaction : ");
+        console.log(time);
+        //On etteind la led
+        var frame_obj_led = {
+            type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+            destination64: frame.remote64,
+            command: "D2",
+            commandParameter: [0x04],
+        };
+        xbeeAPI.builder.write(frame_obj_led);
+        if(time<timeMax){
+          score = scrore +1;
+          timeMax = timeMax-10;
+          //Tirage Aléatoire
+          destination = getRandom(1, 5);
+          //Allumage led
+          var frame_obj_led1 = {
+            type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+            destination64: destination,
+            command: "D2",
+            commandParameter: [0x05],
+          };
+          xbeeAPI.builder.write(frame_obj_led1);
+          start = new Date();
+        } else {
+          //CAS PERDU
+          //on allume toute les led
+          var frame_obj_led = {
+            type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+            destination64: BROADCAST_ADDRESS,
+            command: "D2",
+            commandParameter: [0x05],
+          };
+          xbeeAPI.builder.write(frame_obj_led);
+          lose = true;
+        }
+      } else { //Mauvais bouton
+        //CAS PERDU
+        //on allume toute les led
+        var frame_obj_led = {
+          type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+          destination64: BROADCAST_ADDRESS,
+          command: "D2",
+          commandParameter: [0x05],
+        };
+        xbeeAPI.builder.write(frame_obj_led);
+        lose = true;
+      }
     }
-  } else {
-    //console.log(frame);
   }
 });
 
