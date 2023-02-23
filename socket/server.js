@@ -57,6 +57,8 @@ var timeMax;
 var score;
 var fisrtled;
 var lose;
+var bestTime;
+var totalTime;
 
 var start;
 mqtt.setStartCallback(() => start = true);
@@ -82,6 +84,8 @@ lose = false;
 fisrtled=true;
 score=0;
 timeMax=2500;
+bestTime=2500;
+totalTime=0;
 start=false;
 });
 
@@ -115,6 +119,9 @@ xbeeAPI.parser.on("data", function (frame) {
       // };
       //Quitter Partie
       mqtt.publish('game_over');
+      mqtt.publish('best_time '+bestTime);
+      var average = totalTime/score;
+      mqtt.publish('average_time '+average);
       start = false;
       lose = false;
       fisrtled=true;
@@ -149,7 +156,12 @@ xbeeAPI.parser.on("data", function (frame) {
               commandParameter: [0x04],
           };
           xbeeAPI.builder.write(frame_obj_led);
+          //Verification Timer
           if(time<timeMax){
+            if(time<bestTime){
+              bestTime = time;
+            }
+            totalTime = totalTime + time;
             score = score +1;
             mqtt.publish('score '+score);
             mqtt.publish('time '+time);
