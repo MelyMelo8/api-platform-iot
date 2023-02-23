@@ -14,23 +14,25 @@ const SERIAL_PORT = process.env.SERIAL_PORT;
 // On renvoie un nombre aléatoire entre une valeur min (incluse)
 // et une valeur max (exclue)
 function getRandom(min, max) {
-  number =  Math.random() * (max - min) + min;
+  let number = 2; //Math.trunc(Math.random()) * (max - min) + min;
+  let destination;
   switch (number) {
     case 1:
-      destination = process.env.ZIBGEE_1;
+      destination = process.env.ZIGBEE_1;
       break;
     case 2:
-      destination = process.env.ZIBGEE_2;
+      destination = process.env.ZIGBEE_2;
       break;
     case 3:
-      destination = process.env.ZIBGEE_3;
+      destination = process.env.ZIGBEE_3;
       break;
     case 4:
-      destination = process.env.ZIBGEE_4;
+      destination = process.env.ZIGBEE_4;
       break;
     default:
       break;
   }
+  console.log("Random " + number);
   return destination;
 }
 
@@ -87,30 +89,30 @@ xbeeAPI.parser.on("data", function (frame) {
   if(start==true){
     if(lose==true){
       //quit game
-      sleep(500);
-      var frame_obj_led = {
-        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-        destination64: BROADCAST_ADDRESS,
-        command: "D2",
-        commandParameter: [0x04],
-      };
-      sleep(500);
-      xbeeAPI.builder.write(frame_obj_led);
+      // set timeout au lieu de sleep
       var frame_obj_led = {
         type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
         destination64: BROADCAST_ADDRESS,
         command: "D2",
         commandParameter: [0x05],
       };
+      
       xbeeAPI.builder.write(frame_obj_led);
-      sleep(500);
-      xbeeAPI.builder.write(frame_obj_led);
-      var frame_obj_led = {
-        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-        destination64: BROADCAST_ADDRESS,
-        command: "D2",
-        commandParameter: [0x04],
-      };
+      // var frame_obj_led = {
+      //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+      //   destination64: BROADCAST_ADDRESS,
+      //   command: "D2",
+      //   commandParameter: [0x05],
+      // };
+      // xbeeAPI.builder.write(frame_obj_led);
+      
+      // xbeeAPI.builder.write(frame_obj_led);
+      // var frame_obj_led = {
+      //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+      //   destination64: BROADCAST_ADDRESS,
+      //   command: "D2",
+      //   commandParameter: [0x04],
+      // };
       //Quitter Partie
       mqtt.publish('game_over');
       start = false;
